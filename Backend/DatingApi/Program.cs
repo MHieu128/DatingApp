@@ -1,7 +1,10 @@
+using System.Text;
 using DatingApi.Data;
 using DatingApi.IServices;
 using DatingApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +20,8 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        var tokenKey = builder.Configuration["Token:Key"]
-                        ?? throw new ArgumentNullException("Token:Key");
+        var tokenKey = builder.Configuration["TokenKey"]
+                        ?? throw new ArgumentNullException("TokenKey");
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = false,
