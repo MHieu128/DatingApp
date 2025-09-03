@@ -1,4 +1,6 @@
 using DatingApi.Data;
+using DatingApi.IServices;
+using DatingApi.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +13,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 });
 
 builder.Services.AddCors();
+builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var tokenKey = builder.Configuration["Token:Key"]
+                        ?? throw new ArgumentNullException("Token:Key");
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = false,
+            ValidateAudience = false,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Token:Issuer"],
+            ValidAudience = builder.Configuration["Token:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(tokenKey))
+        };
+    });
 
 var app = builder.Build();
 

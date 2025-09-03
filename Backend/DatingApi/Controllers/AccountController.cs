@@ -1,16 +1,19 @@
 using DatingApi.Data;
 using DatingApi.DTOs;
 using DatingApi.Entities;
+using DatingApi.Extensions;
+using DatingApi.IServices;
+using DatingApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 
 namespace DatingApi.Controllers;
 
-public class AccountController(AppDbContext context) : BaseApiController
+public class AccountController(AppDbContext context, ITokenService tokenService) : BaseApiController
 {
     [HttpPost("register")]
-    public async Task<ActionResult<AppUser>> Register(RegisterDTO registerDTO)
+    public async Task<ActionResult<UserDTO>> Register(RegisterDTO registerDTO)
     {
         if (await EmailExists(registerDTO.Email))
         {
@@ -29,11 +32,11 @@ public class AccountController(AppDbContext context) : BaseApiController
         context.Users.Add(user);
         await context.SaveChangesAsync();
 
-        return user;
+        return user.ToDTO(tokenService);
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<AppUser>> Login(LoginDTO loginDTO)
+    public async Task<ActionResult<UserDTO>> Login(LoginDTO loginDTO)
     {
         var user = await context.Users.SingleOrDefaultAsync(u => u.Email == loginDTO.Email);
         if (user == null) return Unauthorized("Invalid email");
@@ -42,7 +45,7 @@ public class AccountController(AppDbContext context) : BaseApiController
         var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(loginDTO.Password));
         if (!computedHash.SequenceEqual(user.PasswordHash)) return Unauthorized("Invalid password");
 
-        return user;
+        return user.ToDTO(tokenService);
     }
 
     private async Task<bool> EmailExists(string email)
