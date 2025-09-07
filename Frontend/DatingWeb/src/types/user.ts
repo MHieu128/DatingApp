@@ -12,7 +12,7 @@ export type LoginCreds = {
 }
 
 export type RegisterCreds = {
-    displayName: string;
     email: string;
+    displayName: string;
     password: string;
 }

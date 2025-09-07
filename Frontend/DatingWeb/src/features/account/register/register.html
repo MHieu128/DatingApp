@@ -1,0 +1,20 @@
+<div class="card bg-base-100 w-1/2 mx-auto flex flex-col p-6 rounded-lg shadow-lg">
+    <div class="card-title justify-center text-3xl text-primary">Sign up</div>
+    <div class="card-body w-full">
+        <form #registerForm="ngForm" (ngSubmit)="register()" class="flex flex-col gap-4 w-full">
+            <input [(ngModel)]="creds.email" type="email" class="input w-full" placeholder="Email" name="email" required />
+            <input [(ngModel)]="creds.displayName" type="text" class="input w-full" placeholder="Display Name" name="displayName" required />
+            <input [(ngModel)]="creds.password" type="password" class="input w-full" placeholder="Password" name="password" required />
+            <select class="select w-full">
+                <option disabled selected>Pick a member</option>
+                @for(member of membersFromHome(); track $index) {
+                    <option value="{{member.id}}">{{member.displayName}}</option>
+                }
+            </select>
+            <div class="flex items-center justify-end gap-3">
+                <button class="btn btn-primary" type="submit">Register</button>
+                <button class="btn btn-secondary" type="button" (click)="cancel()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
