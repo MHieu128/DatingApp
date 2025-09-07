@@ -1,21 +1,36 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, signal, inject, OnInit } from '@angular/core';
 import { Nav } from "../layout/nav/nav";
+import { AccountService } from '../core/services/account-service';
+import { Home } from "../features/home/home";
 
 @Component({
   selector: 'app-root',
-  imports: [Nav],
+  imports: [Nav, Home],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnInit {
+  private accountService = inject(AccountService);
   private http = inject(HttpClient);
   protected readonly title = signal('Dating');
   protected members = signal<any[]>([]);
 
   ngOnInit() {
-    this.http.get<any>('https://localhost:5001/api/members').subscribe({
-      next: (response: any) => this.members.set(response),
+    this.loadMembers();
+    this.setCurrentUser();
+  }
+
+  setCurrentUser() {
+    const userJson = localStorage.getItem('user');
+    if (!userJson) return;
+    const user = JSON.parse(userJson);
+    this.accountService.currentUser.set(user);
+  }
+
+  loadMembers() {
+    this.http.get<any[]>('https://localhost:5001/api/members').subscribe({
+      next: (response: any[]) => this.members.set(response),
       error: (error: any) => {
         console.error('Error fetching members:', error);
       },
@@ -24,5 +39,4 @@ export class App implements OnInit {
       }
     });
   }
-
 }
