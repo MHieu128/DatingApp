@@ -11,6 +11,11 @@ obj/
 *.cache
 *.log
 .vs/
+# SQLite database files
+*.sqlite
+*.sqlite3
+*.db-shm
+*.db-wal
 # Entity Framework Migrations
 Migrations/
 # ASP.NET secrets
