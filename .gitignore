@@ -55,3 +55,9 @@ yarn-error.log*
 *.swp
 *.bak
 *.tmp
+
+# SSL certificates (do not commit local dev certs)
+ssl/
+*.pem
+*.crt
+*.key

@@ -38,19 +38,71 @@ This repository contains a full-stack dating application with a .NET (ASP.NET Co
    ```
 
 ### Frontend Setup
+
 1. Navigate to the frontend directory:
-   ```sh
-   cd Frontend/DatingWeb
-   ```
+    ```sh
+    cd Frontend/DatingWeb
+    ```
 2. Install dependencies:
-   ```sh
-   npm install
-   ```
-3. Run the Angular app:
-   ```sh
-   ng serve
-   ```
+    ```sh
+    npm install
+    ```
+3. (Optional, for HTTPS) Create a local SSL certificate using mkcert:
+    - Install [mkcert](https://github.com/FiloSottile/mkcert):
+       ```sh
+       brew install mkcert
+       mkcert -install
+       ```
+    - Generate certificates in the `ssl` folder:
+       ```sh
+       mkdir -p ssl
+       mkcert -key-file ssl/localhost-key.pem -cert-file ssl/localhost.pem localhost
+       ```
+    - Update `angular.json` to use the generated certs for `ng serve`:
+       ```json
+       "serve": {
+          "options": {
+             "sslKey": "ssl/localhost-key.pem",
+             "sslCert": "ssl/localhost.pem"
+          }
+       }
+       ```
+    - Then run the Angular app with HTTPS:
+       ```sh
+       ng serve --ssl true --ssl-key ssl/localhost-key.pem --ssl-cert ssl/localhost.pem
+       ```
+
+4. Run the Angular app (HTTP):
+    ```sh
+    ng serve
+    ```
 
 ## License
+
+## HTTPS for .NET Backend
+
+To enable HTTPS for the .NET backend in development:
+
+1. Trust the ASP.NET Core development certificate (if not already):
+    ```sh
+    dotnet dev-certs https --trust
+    ```
+2. The backend will use HTTPS by default on a random port. You can configure the port in `Properties/launchSettings.json` or via environment variables.
+
+3. If you want to use a custom certificate (e.g., from mkcert), update your `appsettings.Development.json`:
+    ```json
+    "Kestrel": {
+       "Endpoints": {
+          "Https": {
+             "Url": "https://localhost:5001",
+             "Certificate": {
+                "Path": "ssl/localhost.pem",
+                "KeyPath": "ssl/localhost-key.pem"
+             }
+          }
+       }
+    }
+    ```
+    And ensure the `ssl` folder and certs are accessible to the backend project.
 
 This project is licensed under the MIT License.
