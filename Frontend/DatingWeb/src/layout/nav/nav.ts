@@ -8,11 +8,11 @@ import { ToastService } from '../../core/services/toast-service';
   selector: 'app-nav',
   imports: [FormsModule, RouterLink, RouterLinkActive],
   templateUrl: './nav.html',
-  styleUrl: './nav.css'
+  styleUrl: './nav.css',
 })
 export class Nav {
   protected accountService = inject(AccountService);
-  protected creds: any = {}
+  protected creds: any = {};
   private router = inject(Router);
   private toast = inject(ToastService);
 
@@ -24,8 +24,8 @@ export class Nav {
         this.creds = {}; // Clear credentials after successful login
       },
       error: (error) => {
-        this.toast.error(error.error); 
-      }
+        this.toast.error(error.error);
+      },
     });
   }
 
