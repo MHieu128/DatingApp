@@ -18,7 +18,7 @@ This repository contains a full-stack dating application with a .NET (ASP.NET Co
 ## Getting Started
 
 ### Prerequisites
-- [.NET 9 SDK](https://dotnet.microsoft.com/)
+- [.NET 10 SDK](https://dotnet.microsoft.com/)
 - [Node.js & npm](https://nodejs.org/)
 - [Angular CLI](https://angular.io/cli)
 
